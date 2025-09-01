@@ -33,7 +33,52 @@ This repository provides a step-by-step guide to set up n8n (a workflow automati
    ```
 
 3. **Set Up Docker Compose**:
-   Use the provided `docker-compose.yaml` file (included in this repo) to run n8n and PostgreSQL.
+   Use the provided `docker-compose.yaml` file (included in this repo) to run n8n and PostgreSQL:
+   ```yaml
+    version: '3.8'
+
+    services:
+      postgres:
+        image: postgres:16
+        restart: always
+        environment:
+          - POSTGRES_USER=${POSTGRES_USER}
+          - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+          - POSTGRES_DB=${POSTGRES_DB}
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+
+      n8n:
+        image: docker.n8n.io/n8nio/n8n
+        restart: always
+        environment:
+          - N8N_PROXY_HOPS=${N8N_PROXY_HOPS}
+          - DB_TYPE=postgresdb
+          - DB_POSTGRESDB_HOST=postgres
+          - DB_POSTGRESDB_PORT=5432
+          - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+          - DB_POSTGRESDB_USER=${POSTGRES_USER}
+          - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+          - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+          - N8N_RUNNERS_ENABLED=true
+          - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
+          - N8N_PORT=5678
+          - N8N_PROTOCOL=https
+          - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+          - TZ=${GENERIC_TIMEZONE}
+          - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}
+          - N8N_EDITOR_BASE_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}
+        ports:
+          - 5678:5678
+        depends_on:
+          - postgres
+        volumes:
+          - n8n_data:/home/node/.n8n
+
+    volumes:
+      postgres_data:
+      n8n_data:
+    ```
 
 4. **Run Docker Compose**:
    ```bash
