@@ -15,8 +15,8 @@ This repository provides a step-by-step guide to set up n8n (a workflow automati
 
 1. **Clone or Download the Repository**:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/zororaka00/n8n-guide.git
+   cd n8n-guide
    ```
 
 2. **Create Environment File**:
